@@ -1,0 +1,922 @@
+---
+title: "**Business Case: Attrition Prediction**"
+author: "Jaime Paz"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "default"
+
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center><img
+src="https://editor.analyticsvidhya.com/uploads/50662High-employee-turnover.jpg"
+width="900" 
+height="300">
+</center>
+
+## **Business Context**
+
+The objective of this project is to provide insights and analysis about our attrition behavior during the current year 2021. Recently, our HR Department is concern about our turnover and the issues pertaining to attrition and how can they be addressed. Sharing of data and insights happens regularly to help teams to identify trends and patterns and help in changing action plans or creating new plans, as needed.
+One of the objectives of this document is to show insights and factors contributing to our attrition, that can help our business executives to update/create the current business goals.
+
+The provided dataset contains a sample of some of our employees during the year 2021. There are several features such as education, gender, job level position, monthly income, and others. In addition, our team of IT has delivered a survey to all of our employees regarding about the work life balance, environment and satisfaction, which has been included in our main files. A manager survey was also delivered along with the employee survey and will be included as well.
+
+We will see on the next sections, that our **target** variable of attrition is called "attrition". These variable is encoded as "yes = 1" if the employee attrit the current period. On the other hand, "No = 0" means that the employee will likely to stay at the company.
+
+## **Source of the data**
+
+The data was collected from  [Kaggle.com](https://www.kaggle.com/vjchoudhary7/hr-analytics-case-study), and there, you can find all the files in CSV format.
+
+
+## **Business value of this project**
+
+The business value of this project is to come up with a statistical model capable to predict whether a employee will attrit during the current period. This is achieved by estimating the probability of attrition, which can help to **estimate the monetary loss in our business**.
+
+We are going to use machine learning and find an accurate model than can help to predict this probability. This of course means that we need to prove that our suggested model will not contain errors in our predictions.
+
+## **Tools Used**
+
+For this particular project we are going to focus on one of the most used Data Science tool available in the open-source community, and that is **Python Programming**. 
+Python has a vast collection of tools to wrangle/transform the data (Pandas Package) and most importantly, we have the scikit-learn package, which is one of the most recognized utilities to apply machine learning and statistics.
+
+The list of supervised machine learning algorithms that are going to be used to predict the attrition label, are going to be:
+
+**1. Logistic Regression:** as the name states, it's basically a regression model in wich our target variable (Attrition or No Attrition, independent variable) is calculated by taking the log of the odds ratio (p / (1 - p)). Here p means the probability of the event (attrition). The model also takes many "regression variables" (independent features) multiplied by a weight (coefficient). In short, the functionality of the model is similar to linear regression, but instead of having a "numeric dependent variable", we will have a "discrete dependent variable" (0 for Non-Attrition, 1 for Attrition).
+
+**2. Decision Trees:** A decision tree is a flowchart-like structure in which each internal node represents a "test" on an attribute (e.g. whether an employee attrit or not), each branch represents the outcome of the test, and each leaf node represents a class label (decision taken after computing all attributes). The paths from root to leaf represent classification rules. 
+
+This document was created using R Markdown, so we need to include some packages to get started. Also, we are going to use the **reticulate** package in R to embed code from Python.
+
+## **Contents**
+
+The present document has been divided on the next sections:
+
+1. Importing libraries
+2. Getting / wrangling the data
+3. Cleaning data
+4. Exploratory data analysis
+5. Data preparation
+6. Data Modeling (Logistic Regression & Decision Tree)
+7. Feature importance
+8. Final words and recommendations
+
+## **1.0. Importing libraries**
+
+First, we import the packages from R:
+
+```{r packages_r}
+
+Sys.setenv(RETICULATE_PYTHON = "/usr/local/bin/python3.7")
+library(reticulate)
+use_python('/usr/bin/python3', require = T)
+```
+
+Second, we import Python packages
+
+```{python packages_py}
+import pandas as pd              # package for data wrangling and transformation
+import numpy as np               # package for linear algebra
+import seaborn as sns            # advanced graphical interface package 
+import matplotlib.pyplot as plt  # basic graphical interface package
+import warnings
+warnings.filterwarnings('ignore')
+
+```
+
+## **2.0.  Getting / wrangling the data**
+
+The purpose of this section is to read the files (in CSV format) and create a main data frame:
+
+```{python data}
+
+# A. MAIN FILES
+# general data (employee attributes dataset)
+general_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/general_data.csv')
+
+# B. SURVEY DATA
+# 1. manager
+manager_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/manager_survey_data.csv')
+
+# 2. employee
+employee_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/employee_survey_data.csv')
+
+# C. TIME SERIES DATA (employee - worked time (business hours))
+
+# in time (registered hour (start of the day))
+in_time = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/in_time.csv')
+# out time (registered hour (end of the day))
+out_time = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/out_time.csv')
+
+# D. DICTIONARY OF THE PROJECT
+# data dictionary
+data_dictionary = pd.read_excel('/home/analytics/R/Projects/Python/datasets/attrition/data_dictionary.xlsx')
+
+```
+
+### **2.1. Checking shape and data structures**
+
+We need to check the shape of our data (columns vs rows) and if it was read in a correct and structured format.
+
+```{python data_1}
+print(general_data.columns)
+
+```
+
+```{python data_2}
+# shape of general data - rows / cols of data
+print(general_data.shape)
+```
+
+```{python data_3}
+general_data.head(1)
+```
+```{python data_4}
+# shape of manager data - rows / cols of data (survey)
+print(manager_data.shape)
+```
+
+```{python data_5}
+print(manager_data.head(1))
+```
+
+```{python data_6}
+# shape of employee data - rows / cols of data (survey)
+print(employee_data.shape)
+```
+
+```{python data_7}
+print(employee_data.head(1))
+```
+
+### **2.2. Merging general + employee survey + manager survey data**
+
+Now, our task is to merge the **employee survey data** with the **general employee dataset**:
+
+```{python data_8}
+df = pd.concat([general_data.set_index('EmployeeID'), manager_data.set_index('EmployeeID'), 
+                employee_data.set_index('EmployeeID')], axis = 1, join = 'inner').reset_index()
+```
+
+```{python data_9}
+df.head(2)
+```
+
+```{python data_10}
+#checking data types of the data
+df.dtypes
+```
+
+### **2.3. Analyzing time series data (in/out business hours)**
+
+In addition to the files already present, we have 2 more sources: **in time data** and **out time data**. In short, these files contain the in/out "registered schedule" of their day to day jobs.
+
+**in_time dataframe:**
+
+The goal in these point, is to wrangle the data in a structured format and convert in a proper datatime format.
+
+```{python data_11}
+in_time.head(1)
+```
+
+```{python data_12}
+#data types
+in_time.dtypes
+```
+We need to convert current columns into "date time columns", in order to manipulate them
+
+```{python data_13}
+in_time.iloc[:, 1:] = in_time.iloc[:, 1:].astype('datetime64[ns]')
+```
+
+```{python data_15}
+in_time.dtypes
+```
+
+```{python data_17}
+# renaming index of in_time data, to employee ID
+in_time.rename({'Unnamed: 0': 'EmployeeID'}, axis = 1, inplace = True)
+excluded = in_time.isnull().all()
+excluded[excluded == True] #all these columns have NULL VALUES, we need to exclude them
+```
+
+
+```{python data_18}
+excluded_in_cols =list(excluded[excluded == True].index)
+excluded_in_cols
+```
+
+The objective of the next chunk of code is to convert from datetime to "in hours" format. The reason for this, is that we will create an additional feature called "Average Hours", which is something we usually call "Feature Engineering". In short, we create additional variables to our dataset, with the purpose to address their importance agains our target variable: attrition.
+
+
+```{python data_19}
+#dropping columns that we won't need
+in_time.drop(excluded_in_cols, axis=1, inplace=True)
+```
+
+The objective of the next chunk of code is to convert from datetime to "out hours" format. Again, our purpose is to address the importance against our target variable: attrition.
+
+```{python data_20}
+# Data frame to convert date time into hours (we are going to find the average of hours worked (business hours) )
+in_time_hours = pd.DataFrame()
+for col in in_time.columns[1:]:
+    time = pd.DatetimeIndex(in_time[col])  # converts to datetime object index
+    in_time_hours[col] = (time.hour * 60 + time.minute) / 60
+    
+in_time_hours['EmployeeID'] = in_time['EmployeeID']
+in_time_hours.head(5)
+```
+
+**out_time data**
+
+Using the same logic of the previous section, we need to wrangle the data in a structured format and convert in a proper datatime format.
+
+```{python data_21}
+out_time.iloc[:, 1:] = out_time.iloc[:, 1:].astype('datetime64[ns]')
+out_time.rename({'Unnamed: 0': 'EmployeeID'}, axis = 1, inplace = True)
+excluded = out_time.isnull().all()
+excluded[excluded == True] 
+excluded_out_cols =list(excluded[excluded == True].index)
+out_time.drop(excluded_out_cols, axis=1, inplace=True)
+out_time.iloc[:, 1:] = out_time.iloc[:, 1:].astype('datetime64[ns]')
+out_time.rename({'Unnamed: 0': 'EmployeeID'}, axis = 1, inplace = True)
+out_time_hours = pd.DataFrame()
+for col in out_time.columns[1:]:
+    time = pd.DatetimeIndex(out_time[col])  # converts to datetime object index
+    out_time_hours[col] = (time.hour * 60 + time.minute) / 60
+```
+
+
+```{python data_22}
+out_time_hours.head(2)
+```
+
+### **2.4. Preparing data to join: in_time & out_time dataframes**
+
+In this section (and 2.5), we will be creating a new dataframe called **"attrition"**. This is going to the data that we will be using as input to our machine learning models.
+
+```{python data_23}
+ts_df = pd.DataFrame()
+ts_df['EmployeeID_in'] = in_time['EmployeeID']
+ts_df['EmployeeID_out'] = out_time['EmployeeID']
+ts_df['EmployeeID'] = ts_df['EmployeeID_in'] - ts_df['EmployeeID_out']
+```
+
+
+```{python data_24}
+ts_df.loc[ts_df['EmployeeID'] != 0]  #checking if all matched correctly by using our master key: EmployeeID
+```
+
+```{python data_25}
+ts_df.drop(['EmployeeID_in','EmployeeID_out'], axis=1, inplace=True)
+ts_df['EmployeeID'] = in_time['EmployeeID']
+ts_df.head(2)
+```
+
+**Is there any day-off on the data?**
+
+```{python data_26}
+ts_df['days_off'] = in_time_hours.isnull().sum(axis = 1)
+ts_df.head(2)
+```
+### **2.5. Concatenating with main data**
+
+Here, we continue to merge the data to finally have the **attrition** dataframe:
+
+```{python data_27}
+attrition = pd.concat([df.set_index('EmployeeID'), ts_df.set_index('EmployeeID')], 
+                      axis = 1, join = 'inner').reset_index()
+attrition.reset_index(drop = True, inplace = True)
+attrition.head(2)
+```
+
+```{python data_28}
+attrition.shape
+```
+## **3.0. Data cleaning**
+
+The goal of this phase is to clean our data by replacing NaN values. This task is very important, since most of the machine learning models require No Missing Values in our data:
+
+### **3.1. Check for NULL VALUES**
+
+```{python data_29}
+attrition_null_value_col = attrition.isna().sum()[attrition.isna().sum()!= 0].reset_index().rename(columns=
+                                                                        {'index': 'col_name', 0: '#'})
+attrition_null_value_col['%'] = attrition_null_value_col['#'] / attrition.shape[0]
+attrition_null_value_col
+```
+
+As we can see, have missing values in some columns. Compared to the lenght of the data, this is not too much. However we need to assess those values:
+
+
+```{python data_30}
+# NumCompaniesWorked
+
+#We are going to replace the NaN values with "0". This value is not present in the data.
+attrition['NumCompaniesWorked'] = attrition['NumCompaniesWorked'].fillna(0)
+#TotalWorkingYears
+
+# Again, there is not much information on the dictionary that we can refer too. Also, it doesn't seem to be a pattern on these NaNs. We are going to replace it with 0.
+attrition['TotalWorkingYears'] = attrition['TotalWorkingYears'].fillna(0)
+
+# EnvironmentSatisfaction
+
+# No pattern of these NaNs could be detected. There is no much information on the data dictionary. We are going to use the same logic as the previous ones:
+attrition['EnvironmentSatisfaction'] = attrition['EnvironmentSatisfaction'].fillna(0)
+
+# JobSatisfaction
+
+# Although these people have several experience in their jobs, the Job Satisfaction was not reflected on the data. Since there is no enough information on the data dictionary, we are going to replace these values using the same logic as before:
+
+attrition['JobSatisfaction'] = attrition['JobSatisfaction'].fillna(0)
+
+# WorkLifeBalance
+# No pattern was detected as the previous examples. Let's replace these NaNs with the same logic as before:
+
+attrition['WorkLifeBalance'] = attrition['WorkLifeBalance'].fillna(0)
+
+### CHECKING NANS again:
+attrition_null_value_col = attrition.isna().sum()[attrition.isna().sum()!= 0].reset_index().rename(columns=
+                                                                        {'index': 'col_name', 0: '#'})
+attrition_null_value_col['%'] = attrition_null_value_col['#'] / attrition.shape[0]
+
+attrition_null_value_col
+
+```
+
+### **3.2. Checking zero variance variables (not meaningful)**
+
+We are going to check those variables which show no variance, that means, displaying just one single value. Also, our master key EmployeeID will no longer needed:
+
+```{python data_31}
+attrition.select_dtypes(exclude = 'object').apply(pd.Series.nunique, axis = 0)
+```
+
+```{python data_32}
+attrition.drop(['EmployeeCount', 'StandardHours', 'EmployeeID', 'Over18'], axis = 1, inplace = True)
+```
+
+## **4.0. Exploratory data analysis**
+
+Now that we have our data cleaned, we move to the next stage wich is analyzing the data and get some insights about our dataset from attrition.
+
+### **4.1. Numerical features**
+
+This section will contain deep analysis of our numerical features. They are basically stored in a data type of integer or float.
+
+**4.1.1. Plotting the data (Probability Densities)**
+
+```{python data_33}
+num_feats_1 = list(attrition.select_dtypes(include = ['int64', 'float64'] ).columns)[0:9]
+num_feats_2 = list(attrition.select_dtypes(include = ['int64', 'float64'] ).columns)[9:]
+
+fig = plt.figure(figsize=(20,20))
+
+for index, item in enumerate(num_feats_1, 1):
+    plt.subplot(3, 3, index)
+    sns.distplot(attrition[attrition.Attrition == 'Yes'][item], color="red", hist = False,  kde=True, norm_hist=True)
+    sns.distplot(attrition[attrition.Attrition == 'No'][item], color="blue", hist = False,  kde=True, norm_hist=True)
+    plt.legend(labels=['Yes','No'], title = 'Attrition?')
+
+plt.show() 
+
+```
+
+
+```{python data_33_2}
+
+fig = plt.figure(figsize=(20,20))
+
+for index, item in enumerate(num_feats_2, 1):
+    plt.subplot(3, 4, index)
+    sns.distplot(attrition[attrition.Attrition == 'Yes'][item], color="red", hist = False,  kde=True, norm_hist=True)
+    sns.distplot(attrition[attrition.Attrition == 'No'][item], color="blue", hist = False,  kde=True, norm_hist=True)
+    plt.legend(labels=['Yes','No'], title = 'Attrition?')
+
+plt.show() 
+```
+
+
+**Key Insights**
+
+**1.** People around 30 years tend to attrit more than those who not (aging in about 35 years).
+**2.** The higher the total working years, the less amount of attrition. There appears to be a significant different between those who attrit and those who not. Particularly, people with 10 years of working experience (in general) tend to be significantly more stable. The distribution is quite related with those who have worked in our current company as well.
+**3.** Our BPS employees whose performance is around 3, tend to be more stable in our current company, specially. The reason of this, is that most of our employees stay around to this performance ratio. This is a red flag for future analysis, because performance rating is not that greater for the current period.
+**4.** People leaving their work before 18:00 hrs. tend to be more motivated and consequently, they are less likely to attrit.
+**5.** It appears to be significant difference between those who attrit and those who not, in terms of the years working with their current manager. Also, the more confident they are with their current managers, the less likelihood of attrition.
+
+**4.1.2. Plotting the data (Cumulative Densities)**
+
+```{python data_34}
+
+fig = plt.figure(figsize=(20,20))
+
+for index, item in enumerate(num_feats_1, 1):
+    plt.subplot(3, 3, index)
+    sns.kdeplot(attrition[attrition.Attrition == 'Yes'][item], color="red", cumulative = True)
+    sns.kdeplot(attrition[attrition.Attrition == 'No'][item], color="blue", cumulative = True)
+    plt.legend(labels=['Yes','No'], title = 'Attrition?')
+
+plt.show() 
+
+```
+
+```{python data_34_2}
+
+fig = plt.figure(figsize=(20,20))
+
+for index, item in enumerate(num_feats_2, 1):
+    plt.subplot(3, 4, index)
+    sns.kdeplot(attrition[attrition.Attrition == 'Yes'][item], color="red", cumulative = True)
+    sns.kdeplot(attrition[attrition.Attrition == 'No'][item], color="blue", cumulative = True)
+    plt.legend(labels=['Yes','No'], title = 'Attrition?')
+
+plt.show() 
+
+```
+
+**4.1.2. Key Insights:**
+
+Cumulative density plots help us to understand “accumulated” probability for each of the numerical variables, and comparing them to the attrition. Here we can spot a couple of insights:
+
+**1.** Years at company is not really affecting after 15 years. There is not significant difference starting in that point. Probably this feature will not add to much value in our final model.
+**2.** Performance rating. Again, is evident that between 3 and 4, there are no statistical difference between those attrit and those who not. Again, we can assess later on if this variable will be significant in our models.
+
+### **4.2.0. Categorical features**
+
+
+```{python data_35}
+# Storing our categorical features
+cat_feats = list(attrition.select_dtypes(include = ['object'] ).columns)
+cat_feats
+```
+```{python data_36}
+cat_feats = list(attrition.select_dtypes(include = ['object'] ).columns)
+
+
+def plot_cat(cats = cat_feats, a = 1, b = 1, c = 1 ):
+    fig = plt.figure(figsize=(15,20))
+    for i in cats[1:]:
+        
+        grouped_df = attrition[['Attrition', i ]] .groupby(['Attrition', i]).size().to_frame('Percent')
+        grouped_df['Percent'] = (grouped_df['Percent'] * 100 / sum(grouped_df['Percent'])).round(0)
+        grouped_df = grouped_df.reset_index()
+        
+        plt.subplot(a, b, c)
+        plt.title('{}, subplot: {}{}{}'.format(i, a, b, c))
+        plt.xlabel(i)
+        sns.barplot(x=i, y = 'Percent', hue='Attrition', data=grouped_df)
+        c = c + 1
+    plt.show()
+
+
+```
+
+```{python data_37}
+plot_cat(cats = cat_feats, a = 3, b = 2, c = 1)
+```
+
+**Key Insights:**
+
+**1.** 60% of people who travel rarely are the ones who don’t attrit. There are about 10% of attrition for those who do travel rarely. The reason being, is that the majority of employees in our company don’t usually travel.
+**2.** The majority of employees in our business belong to the IT department. It represents around 50% of the employees who don’t attrit. In short, we need to put our efforts in maintaining this rate during the next periods.
+
+## **5.0. Feature Engineering / Data Preparation**
+
+Before applying any machine learning model, we need to assess the quality of features that will be imputed in our models.
+
+**1. Outliers:** data is sometimes skewed, and some machine learnings will be impacted by this situation. For that, it’s highly recommended to reduce that variance by applying transformations in our features. For instance, log transformation or standardize them (which makes our data more consistent and stable)
+
+**2. Encoding categorical features:** by default, every machine learning is required to have numerical features as input. For this reason, there are methods that will convert each level (in every categorical feature) into a numeric value. For instance, gender has two levels: Male and Female; so, if a particular row in our data belongs to Male, then we are going to assign a 0 to it. On the contrary, if the row in our data has Female as its level, then we will be assigning 1 to it. This process is called “encoding”. After we built our models, we can of course return the values to the original ones.
+
+#### 5.1. Outliers assessment
+
+```{python data_38}
+# creating two variables for numerical features and categorical features
+numerical_columns = attrition.select_dtypes(exclude = 'object').columns
+nmerical_data = attrition[numerical_columns]
+categorical_columns = attrition.select_dtypes(include='object').columns
+categorical_data = attrition[categorical_columns]
+```
+
+```{python data_39}
+plt.figure(figsize=(20,30))
+for index, item in enumerate(numerical_columns, 1):
+    plt.subplot(8, 3, index)
+    sns.boxplot(attrition[item])
+plt.show() 
+```
+
+
+Is evident that we can spot some potential outliers in some features. For instance: Years Since Last Promotion, Total Working Years, Years at Company & Years With Current Manager. For this reason, we are going to apply log-transformation to these numerical variables in order to make our data more stable and capable to predict (make them more normal bell-shaped distributed)
+
+
+```{python data_40}
+import copy
+attritionv2 = copy.deepcopy(attrition) #creating a copy in our current dataset.
+#attrition = attritionv2
+
+cols_to_trans = numerical_columns
+
+for column in cols_to_trans:
+    try:
+        attrition[column] = np.log1p(attrition[column]) #applying log(x + 1) transformation
+    except (ValueError, AttributeError):
+        pass
+```
+
+### **5.2. Encoding Categorical variables (to dummy variables)**
+
+In the next steps, when we are encoding to dummy variables, in short, it means that we are assigning a numerical value to each level of categorical variables
+
+```{python data_41}
+dummies = pd.get_dummies(attrition[categorical_columns], drop_first = True)
+attrition_dummies = pd.concat([attrition, dummies], axis = 1)
+attrition_dummies.drop(categorical_columns, axis = 1, inplace = True)
+
+X = attrition_dummies.drop('Attrition_Yes', axis=1)
+y = attrition_dummies['Attrition_Yes']
+
+
+```
+
+The new variable "X" will contain the features on the dataset. The variable "y" will contain the target variable: Attrition.
+
+```{python data_42}
+X.head(2)
+```
+
+```{python data_43}
+y.head()
+```
+
+### **5.3. Normalizing (Standardize ) numerical features**
+
+As part of the process, we are also going to transform our numerical features (already log transformed) to a normalization step. This is basically reducing the variance in our numerical features and make them more stable
+
+
+```{python data_44}
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+columns_std = X.columns
+attrition_dummies[columns_std] = scaler.fit_transform(attrition_dummies[columns_std])
+```
+
+```{python data_45}
+attrition_dummies.head(2)
+```
+
+### **5.4 Checking Multicollinearity**
+
+We need to assess those features which are correlated to each other. This is one requirement of the Logistic Regression Algotithm: None of the independent variables should be correlated to each other. 
+
+We are going to use the Variance Inflation Factor (VIF) to meassure the multicollinearity of independent variables. In simple terms VIF equals to the ratio of the overall model variance to the variance of a model that includes only that single independent variable. A high VIF means that the independet variable is highly collinear with the other variables in the model.
+
+```{python data_46}
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+vif = pd.DataFrame()
+vif["vars"] = X.columns
+vif['vif'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+for index,column in enumerate(X.columns):
+    if vif['vif'][index]>5:  #revemoving correlated variables above 5 (which is a fixed critical value)
+        vif = vif.drop([index], axis=0)
+
+```
+
+```{python data_47}
+# We print the remaining variables
+print(vif)
+```
+
+## **6. 0. Model Building**
+
+The model building section consists in spliting our data in two parts: train (data to be trained by the machine learning model) and testing data (the data that is going to assessed, in order to validate the accuracy of "learning"). Usually, we divide our train data in 75% and test with 25%.
+
+```{python data_48}
+columns_vif = list(vif['vars'])
+data = attrition_dummies[columns_vif]
+data = pd.concat([data, attrition_dummies['Attrition_Yes']], axis=1)
+```
+
+## **6. 1. Training / Testing split**
+
+```{python data_49}
+from sklearn.model_selection import train_test_split
+X = data.drop('Attrition_Yes', axis=1)
+y = data['Attrition_Yes']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state=42)
+```
+
+We are leaving 25% of the data for testing, and so the training data will be 75%
+
+## **6. 2. Assessing balanced / imbalanced classes for the target variable**
+
+Before using the supervised machine learning algorithm - Logistic Regression, we need to assess the structure of our target variable (attrition):
+
+
+```{python data_50}
+#Ploting barplot for target 
+plt.figure(figsize=(6,4))
+g = sns.barplot(data['Attrition_Yes'], data['Attrition_Yes'], palette='Set1', estimator=lambda x: len(x) / len(data) )
+
+#Anotating the graph
+for p in g.patches:
+        width, height = p.get_width(), p.get_height()
+        x, y = p.get_xy() 
+        g.text(x + width/2, 
+               y + height, 
+               '{:.0%}'.format(height), 
+               horizontalalignment='center',fontsize=15)
+
+#Setting the labels
+plt.xlabel('Attrition (0 = No, 1 = Yes)', fontsize=14)
+plt.ylabel('Percentage', fontsize=14)
+plt.title('Attrition (%)', fontsize=16)
+plt.show()
+```
+
+
+As we can see, we have an inbalanced dataset in which the majority of employees does not attrit. To deal with this situation, we are going to use select the **class_weight** parameter (i.e. in the Logistic Regression function), and assess which the best value to "weight" our majority class and minority class.
+
+## **6.3. Supervised Machine Learning: Logistic Regression**
+
+Our first machine learning algorithm that is going to be tested is the Logistic Regression.
+Loading necessary packages:
+
+
+```{python data_51}
+from sklearn.metrics import classification_report, roc_auc_score, f1_score, precision_score, recall_score, auc, precision_recall_curve, roc_curve, confusion_matrix, make_scorer
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV, StratifiedKFold, RepeatedStratifiedKFold
+
+```
+
+### **6.3.1. Logistic Regression: Hyper parameter tuning**
+
+In machine learning, we use **hyper-parameter tuning** to create an algorithm that select the best "parameters" for our model. In logistic regression, we are assessing the type of **solver** (to converge at the minimum cost error) and the **weights** for each target class. Of course, we can add more parameters such as ridge/lasso penaltie in case we have over-fitting, which means: our model is having **higher variance**, and thus, learning every specific point in the data and its "performance" will likely to fail, when we validate it against new data.
+
+```{python data_52}
+## 1. APPLYING LOGISTIC REGRESSION ALGORITHM
+log_reg = LogisticRegression()
+
+## 2. Setting the range for class weights (to deal with imbalanced classes)
+
+solvers = ['newton-cg', 'lbfgs', 'liblinear', 'lbfgs']
+
+weights = [{0:x, 1:1.0-x} for x in np.linspace(0.0,0.99,100)]
+
+## 3. Creating a dictionary grid for grid search
+
+param_grid = dict(solver = solvers, 
+                  class_weight = weights)
+
+
+## 4. Selecting accuracy metrics: Precision, Recall and F1 Score
+scorers = {
+    'precision_score': make_scorer(precision_score),
+    'recall_score': make_scorer(recall_score),
+    'f1_score':     make_scorer(f1_score)
+}
+
+## 5. HYPER PARAMETER TUNNING
+
+gridsearch = GridSearchCV(estimator= log_reg, 
+                          param_grid= param_grid,
+                          cv=StratifiedKFold(n_splits = 10), 
+                          n_jobs=-1, 
+                          scoring=scorers,
+                          refit= 'f1_score',   #we focus on the F1 metric to display the better results
+                          return_train_score=True,
+                          verbose=2).fit(X_train.values, y_train.values)
+
+```
+### **6.3.2. Logistic Regression: Displaying results**
+
+First, we print the best results for the class weight parameters. As we can see next, for each of the classes 1 and 0, the best result is about 22% for class 0 (no attrition) and 78% for class 1 (attrition)
+
+
+```{python data_53}
+y_pred = gridsearch.predict(X_test.values)
+print('Best params for F1 score')
+print(gridsearch.best_params_)
+
+```
+
+BUILD THE MODEL USING BEST PARAMETERS
+
+
+```{python data_54}
+log_reg = LogisticRegression(class_weight = {0: 0.22, 1: 0.78}, solver = 'newton-cg')
+log_reg.fit(X_train, y_train)
+y_pred = gridsearch.predict(X_test.values)
+```
+Next, let's display the results for the confusion matrix:
+
+```{python data_55}
+# Function to create a confusion matrix 
+def conf_matrix(y_test, log_reg_pred):    
+    
+    # Creating a confusion matrix
+    con_mat = confusion_matrix(y_true=y_test, y_pred=log_reg_pred)
+    con_mat = pd.DataFrame(con_mat, range(2), range(2))
+   
+    #Ploting the confusion matrix
+    plt.figure(figsize=(6,6))
+    sns.set(font_scale=1.5) 
+    sns.heatmap(con_mat, annot=True, annot_kws={"size": 16}, fmt='g', cmap='Blues', cbar=False)
+    # axis labels
+    plt.xlabel('Predictions')
+    plt.ylabel('Actuals')
+    title = 'Confusion Matrix'.upper()
+    plt.title(title, loc='center')
+
+ 
+```
+
+```{python data_55_}
+conf_matrix(y_test, y_pred)
+plt.show()
+```
+
+For instance, our model is capturing 78 cases of people who were predict as non-attrition (and actually they were). But at the same time, we have 164 cases in which there was NO ATTRITION, and we predicted them as positive (ATTRITION). However, this is less than 741.
+
+
+```{python data_56}
+results = pd.DataFrame(gridsearch.cv_results_)
+results = results.sort_values(by='mean_test_recall_score', ascending=False)
+results = results[['param_class_weight', 'mean_test_f1_score', 'mean_test_recall_score', 
+                   'mean_test_precision_score'  ]]
+results.head(5)
+
+```
+The previous table give us the results for each selected class weights, and the output metrics(F1, recall and precision). Lets say that we want to extract the best solution in terms of F1 metric (estimated in previous blocks):
+
+```{python data_57_}
+results[results['param_class_weight'].astype(str).str.replace("[{ ,}]", "").str.endswith('0.78')].head(1)
+```
+
+
+#### There is other particular way to select the best model. We should focus on the **recall** metric, since the business don't want to miss those employees who attrit. In other words, we don't want the model to incorrectly miss classify the TRUE entries.
+
+### **6.3.3 Logistic Regression: Precision and Recall graph**
+
+```{python data_57}
+y_scores = log_reg.predict_proba(X_test)[:, 1]
+```
+
+```{python data_58}
+def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
+
+    plt.figure(figsize=(8, 8))
+    plt.title("Precision and Recall Scores as a function of the decision threshold")
+    plt.plot(thresholds, precisions[:-1], "b--", label="Precision")
+    plt.plot(thresholds, recalls[:-1], "g-", label="Recall")
+    plt.ylabel("Score")
+    plt.xlabel("Decision Threshold")
+    plt.legend(loc='best')
+```
+
+```{python data_59}
+p, r, thresholds = precision_recall_curve(y_test, y_scores)
+
+```
+
+```{python data_59_}
+plot_precision_recall_vs_threshold(p, r, thresholds)
+plt.show()
+```
+
+By default, the model has selected a threshold of 50%. That means that 0 – 50% the target value is 0 (no attrition), and 50% - 100%, the target value is 1 (attrition). We are free to select the threshold which will give the best results.
+For the business it matters how well we tell the executive leaders, the likelihood of attrition being positive. Let’s say that we commit an error than the audience that those who will attrit, will not. This is costly.
+
+**Precision** is a good measure to determine, when the costs of **False Positive** is high. For instance, a false positive means that an employee that didn’t attrit (actual negative) has been identified as an employee who attrit (predicted attrition). 
+
+**Recall** on the other hand, actually calculates how many of the **Actual Positives** our model capture through labeling it as Positive (True Positive). Applying the same understanding, we know that Recall shall be the model metric we use to select our best model when there is a high cost associated with False Negative. In our case, if an employee who attrit (Actual Positive) is predicted as non-attrition (Predicted Negative), the consequence can be very bad for our business (we may lose money).
+
+Our recommendation is to start at 55% of threshold: we want our model to efficiently capture (at about 37%) that we will not have false positives, but at the same, we are really capturing the actual positives. Then, we can keep improving the model (or use other models) to give more accurate results.
+
+Using a **Logistic Regression Model** we can see that our top features are: Marital Status (single), Business trave (frequently) and Education Field (HR). These features are impacting positively on the model (likely to attrit). We can also name Job Role (Senior Director II), which is also impacting the attrition but in a negative way. 
+
+## **6.4. Supervised Machine Learning: Decision Trees**
+
+The second model that we are going to test is the decision tree algorithm, which is also a supervised machine learning model.
+
+#### **6.4.1 Decision Tree: Hyper parameter tuning**
+
+In decision trees, generaly we care about how we split each node into several categories, but also the depth (vertically) of our trees, starting from the root node through their children.
+
+```{python data_60}
+from sklearn.tree import DecisionTreeClassifier
+
+## 1. APPLYING LOGISTIC REGRESSION ALGORITHM
+tree_classifier = DecisionTreeClassifier(random_state=0)
+
+## 2. Setting the range for class weights (to deal with imbalanced classes)
+
+depth = [1,5, 10, 15, 20, 25, 30]  #depth of the tree (vertically)
+split = [1,2,4,6]                  # how many splits per each node?
+
+## 3. Creating a dictionary grid for grid search
+
+weights = [{0:x, 1:1.0-x} for x in np.linspace(0.0,0.99,100)]
+
+## 3. Creating a dictionary grid for grid search
+
+param_grid = dict(class_weight = weights, max_depth = depth, min_samples_split = split)
+
+## 4. Selecting accuracy metrics: Precision, Recall and F1 Score
+scorers = {
+    'precision_score': make_scorer(precision_score),
+    'recall_score': make_scorer(recall_score),
+    'f1_score':     make_scorer(f1_score)
+}
+
+## 5. HYPER PARAMETER TUNNING
+
+gridsearch = GridSearchCV(estimator= tree_classifier, 
+                          param_grid= param_grid,
+                          cv=StratifiedKFold(n_splits = 10), 
+                          n_jobs=-1, 
+                          scoring=scorers,
+                          refit= 'f1_score',   #we focus on the F1 metric to display the better results
+                          return_train_score=True,
+                          verbose=2).fit(X_train.values, y_train.values)
+```
+#### **6.4.2 Decision Trees: Displaying results**
+
+```{python data_61}
+y_pred = gridsearch.predict(X_test.values)
+print('Best params for F1 score')
+print(gridsearch.best_params_)
+conf_matrix(y_test, y_pred)  
+```
+#### **6.4.3 Decision Tree: Precision and Recall graph**
+
+
+```{python data_62}
+y_scores = gridsearch.predict_proba(X_test)[:, 1]
+
+p, r, thresholds = precision_recall_curve(y_test, y_scores)
+plot_precision_recall_vs_threshold(p, r, thresholds) 
+plt.show()
+```
+We can see that our model accuracy has improved pretty well. Now, if select a new threshold of 80%, then we will be able to a better recall of 65%, which is also the same point as the precision metric.
+
+**BUILDING THE DECISION TREE MODEL WITH THE BEST PARAMETERS**
+
+```{python data_63}
+tree_classifier_v2 = DecisionTreeClassifier(random_state=0, 
+                                         class_weight = {0: 0.22, 1: 0.78}, 
+                                         max_depth = 25, min_samples_split = 2)
+
+tree_classifier_v2.fit(X_train, y_train)
+
+```
+## **7.0 Decision Tree: Variable Explanation**
+
+Let's assess the contribution that each of the features is giving to the model.We are going to achieve this by using **"Shap Values"**. Shap values are a tool that are notable for being able to explain specific predictions from your model. They do this by quantifying the contributions of each individual feature.
+
+```{python data_64}
+import shap 
+explainer = shap.TreeExplainer(tree_classifier_v2, X_train)
+shap_values = explainer.shap_values(X_train)
+
+
+shap.summary_plot(shap_values[1], X_train, plot_type="dot", max_display = 5, 
+                  auto_size_plot=False, show=False, plot_size=[20,10])
+plt.show()
+```
+
+As we can see these are the prominent variables (top 5) on the model: marital status (single), years since last promotion, stock option level, Education Field (Finance) & Business Travel (frequently). 
+
+**1.** As Marital Status (single) category increases, the likelihood of attrition is higher as well.
+**2.** Majority of points are located in which the "Years since last promotion" is low. In this point, the likelihood of attrition increases.
+**3.** The more the employees travel frequently, the higher likelihood of attrition.
+
+## **8.0 Final words and recommendations**
+
+**A.** During the course of this document, we have applied all basic steps involved in a data science project. Particularly, this project helped us to discover those features that are highly correlated with the attrition rate.
+
+**B.** By selecting our second model: decision trees algorithm, we were able to improve our prediction accuracy in detecting whether an employee is likely to attrit during the current period. 
+    
+
+**C.** By selecting a **decision threshold of 80%** we can convey our business executives that we can use this threshold to map whether an employee will attrit (> 80%), or, on the contrary, the employee will not attrit (< 80%). At this particular point we have reached the maximum accuracy of the model by taking the “recall metric”, at 65% approximately.
+
+**D.** We can improve the accuracy of the model by taking the next steps:
+
+**1.** Using advanced machine learning algorithms (such as neural networks, random forest or Boosting algorithms). Here we have used the traditional models that make the models more explainable due to the small complexity of explanation. It depends on the future discussions whether we should use a black box model to improve our accuracy.
+
+**2.** It’s recommended to collect more data. Here we have only taken the data for 2021. This should help to reduce the BIAS of the model or model selection (amount that a model’s prediction differs from the target value, compared to the training data)
+
+**3.** Collecting more features should also help to improve the accuracy of the models. This depends on the HR department to share more information about each employee. On the other hand, we can also look out for new features such as: number of benefits of the employee, schedule flexibilities, annual performance increase on salary, etc.
