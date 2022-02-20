@@ -1,0 +1,13 @@
+"0","import shap "
+"2","ModuleNotFoundError: No module named 'shap'
+"
+"0","explainer = shap.TreeExplainer(tree_classifier_v2, X_train)"
+"2","NameError: name 'shap' is not defined
+"
+"0","shap_values = explainer.shap_values(X_train)"
+"2","NameError: name 'explainer' is not defined
+"
+"0","shap.summary_plot(shap_values[1], X_train, plot_type=""dot"", max_display = 5, "
+"0","                  auto_size_plot=False, show=False, plot_size=[20,10])"
+"2","NameError: name 'shap' is not defined
+"

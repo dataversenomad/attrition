@@ -1,0 +1,71 @@
+library(reticulate)
+use_virtualenv("myenv")
+
+
+#Sys.setenv(RETICULATE_PYTHON = "/usr/local/bin/python3.7")
+#install.packages('reticulate')
+
+
+rm(list=ls())
+
+#this worked
+Sys.setenv(RETICULATE_PYTHON = "/usr/bin/python3.7")
+
+#Sys.setenv(RETICULATE_PYTHON = "/usr/bin/python3.7")
+
+detach("package:reticulate")
+
+library(reticulate)
+install.packages('reticulate')
+
+#install_python("/usr/local/bin/python3.7")
+?use_python
+use_python("/usr/bin/python3.7")
+use_virtualenv("python-3.7.1", required = TRUE)
+
+py_discover_config()
+R.home()
+py_install('pandas')
+
+install_miniconda()
+
+py_config()
+
+reticulate::install_miniconda()
+reticulate::py_discover_config()
+
+#one time
+
+#virtualenv_create("python-3.7.1", python_version = "3.7.1")
+#reticulate::conda_create(
+#  envname = "python-3.7.1",
+#  packages = "python=3.7"
+)
+
+
+
+py_config()
+conda_list()
+repl_python()
+
+
+Sys.setenv(RETICULATE_PYTHON = "/usr/local/bin/python3.7")
+virtualenv_create("python371", python_version = "3.7.1")
+
+
+use_virtualenv("python371", required = TRUE)
+py_install('pandas')
+
+reticulate::repl_python()
+
+
+reticulate::install_miniconda()
+env PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.1
+library(reticulate)
+install_miniconda()
+
+
+
+
+library(reticulate)
+repl_python()

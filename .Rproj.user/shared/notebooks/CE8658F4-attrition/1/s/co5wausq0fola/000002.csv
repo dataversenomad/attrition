@@ -1,0 +1,9 @@
+"0","print(general_data.columns)"
+"1","Index(['Age', 'Attrition', 'BusinessTravel', 'Department', 'DistanceFromHome',
+       'Education', 'EducationField', 'EmployeeCount', 'EmployeeID', 'Gender',
+       'JobLevel', 'JobRole', 'MaritalStatus', 'MonthlyIncome',
+       'NumCompaniesWorked', 'Over18', 'PercentSalaryHike', 'StandardHours',
+       'StockOptionLevel', 'TotalWorkingYears', 'TrainingTimesLastYear',
+       'YearsAtCompany', 'YearsSinceLastPromotion', 'YearsWithCurrManager'],
+      dtype='object')
+"

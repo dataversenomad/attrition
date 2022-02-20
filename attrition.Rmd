@@ -873,7 +873,6 @@ plt.show()
 
 ```
 
-
 We can see that our model accuracy has improved pretty well. Now, if select a new threshold of 80%, then we will be able to a better recall of 65%, which is also the same point as the precision metric.
 
 **BUILDING THE DECISION TREE MODEL WITH THE BEST PARAMETERS**
@@ -922,4 +921,4 @@ As we can see these are the prominent variables (top 5) on the model: marital st
 
 **2.** It’s recommended to collect more data. Here we have only taken the data for 2021. This should help to reduce the BIAS of the model or model selection (amount that a model’s prediction differs from the target value, compared to the training data)
 
-**3.** Collecting more features should also help to improve the accuracy of the models. This depends on the HR department to share more information about each employee. On the other hand, we can also look out for new features such as: number of benefits of the employee, schedule flexibilities, annual performance increase on salary, etc.
+**3.** Collecting more features should also help to improve the accuracy of the models. This depends on the HR department to share more information about each employee. On the other hand, we can also look out for new features such as: number of benefits of the employee, schedule flexibility, annual performance increase on salary, etc.

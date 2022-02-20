@@ -1,0 +1,7 @@
+"0","attrition_dummies.head(2)"
+"1","        Age  DistanceFromHome  ...  MaritalStatus_Married  MaritalStatus_Single
+0  1.418891         -0.041631  ...               1.088232             -0.685565
+1 -0.578938          0.486464  ...              -0.918921              1.458650
+
+[2 rows x 40 columns]
+"

@@ -1,0 +1,4 @@
+"0","ts_df = pd.DataFrame()"
+"0","ts_df['EmployeeID_in'] = in_time['EmployeeID']"
+"0","ts_df['EmployeeID_out'] = out_time['EmployeeID']"
+"0","ts_df['EmployeeID'] = ts_df['EmployeeID_in'] - ts_df['EmployeeID_out']"

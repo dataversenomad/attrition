@@ -1,0 +1,17 @@
+"0","# Data frame to convert date time into hours (we are going to find the average of hours worked (business hours) )"
+"0","in_time_hours = pd.DataFrame()"
+"0","for col in in_time.columns[1:]:"
+"0","    time = pd.DatetimeIndex(in_time[col])  # converts to datetime object index"
+"0","    in_time_hours[col] = (time.hour * 60 + time.minute) / 60"
+"0","    "
+"0","in_time_hours['EmployeeID'] = in_time['EmployeeID']"
+"0","in_time_hours.head(5)"
+"1","   2015-01-02  2015-01-05  2015-01-06  ...  2015-12-30  2015-12-31  EmployeeID
+0    9.716667   10.133333    9.900000  ...    9.900000   10.200000           1
+1   10.250000   10.350000         NaN  ...   10.533333    9.450000           2
+2   10.283333    9.833333   10.233333  ...    9.566667   10.466667           3
+3   10.083333    9.933333   10.183333  ...   10.300000   10.016667           4
+4   10.466667    9.816667    9.750000  ...    9.300000    9.683333           5
+
+[5 rows x 250 columns]
+"
