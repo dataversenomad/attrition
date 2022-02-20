@@ -1,0 +1,7 @@
+"0","import pandas as pd              # package for data wrangling and transformation"
+"0","import numpy as np               # package for linear algebra"
+"0","import seaborn as sns            # advanced graphical interface package "
+"0","import matplotlib.pyplot as plt  # basic graphical interface package"
+"0","import warnings"
+"0","warnings.filterwarnings('ignore')"
+"0",""

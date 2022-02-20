@@ -1,0 +1,50 @@
+"0","num_feats_1 = list(attrition.select_dtypes(include = ['int64', 'float64'] ).columns)[0:9]"
+"0","num_feats_2 = list(attrition.select_dtypes(include = ['int64', 'float64'] ).columns)[9:]"
+"0",""
+"0","fig = plt.figure(figsize=(20,20))"
+"0",""
+"0","for index, item in enumerate(num_feats_1, 1):"
+"0","    plt.subplot(3, 3, index)"
+"0","    sns.distplot(attrition[attrition.Attrition == 'Yes'][item], color=""red"", hist = False,  kde=True, norm_hist=True)"
+"0","    sns.distplot(attrition[attrition.Attrition == 'No'][item], color=""blue"", hist = False,  kde=True, norm_hist=True)"
+"0","    plt.legend(labels=['Yes','No'], title = 'Attrition?')"
+"0",""
+"1","<AxesSubplot:>
+<AxesSubplot:xlabel='Age', ylabel='Density'>
+<AxesSubplot:xlabel='Age', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585c454b70>
+<AxesSubplot:>
+<AxesSubplot:xlabel='DistanceFromHome', ylabel='Density'>
+<AxesSubplot:xlabel='DistanceFromHome', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5851b6b1d0>
+<AxesSubplot:>
+<AxesSubplot:xlabel='Education', ylabel='Density'>
+<AxesSubplot:xlabel='Education', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5864d9ccc0>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobLevel', ylabel='Density'>
+<AxesSubplot:xlabel='JobLevel', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585cb3ddd8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='MonthlyIncome', ylabel='Density'>
+<AxesSubplot:xlabel='MonthlyIncome', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585cda74e0>
+<AxesSubplot:>
+<AxesSubplot:xlabel='NumCompaniesWorked', ylabel='Density'>
+<AxesSubplot:xlabel='NumCompaniesWorked', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5856c0ccf8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='PercentSalaryHike', ylabel='Density'>
+<AxesSubplot:xlabel='PercentSalaryHike', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585cb29470>
+<AxesSubplot:>
+<AxesSubplot:xlabel='StockOptionLevel', ylabel='Density'>
+<AxesSubplot:xlabel='StockOptionLevel', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585cb28ba8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='TotalWorkingYears', ylabel='Density'>
+<AxesSubplot:xlabel='TotalWorkingYears', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585f8d5390>
+"
+"0","plt.show() "
+"0",""

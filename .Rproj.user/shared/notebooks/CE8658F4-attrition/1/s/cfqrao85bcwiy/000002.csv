@@ -1,0 +1,8 @@
+"0","dummies = pd.get_dummies(attrition[categorical_columns], drop_first = True)"
+"0","attrition_dummies = pd.concat([attrition, dummies], axis = 1)"
+"0","attrition_dummies.drop(categorical_columns, axis = 1, inplace = True)"
+"0",""
+"0","X = attrition_dummies.drop('Attrition_Yes', axis=1)"
+"0","y = attrition_dummies['Attrition_Yes']"
+"0",""
+"0",""

@@ -1,0 +1,22 @@
+
+rm(list=ls())
+detach("package:reticulate")
+library(reticulate)
+py_config()
+
+
+
+
+library(reticulate)
+library(tidyverse)
+# Seeing your enviroments
+conda_list()
+
+#Using it
+conda_list()[[1]][2] %>% 
+  use_condaenv(required = TRUE)
+
+#Checking python
+
+import platform
+print(platform.python_version())

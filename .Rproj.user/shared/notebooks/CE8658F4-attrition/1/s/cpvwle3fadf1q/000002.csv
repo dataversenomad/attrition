@@ -1,0 +1,15 @@
+"0","#data types"
+"0","in_time.dtypes"
+"1","Unnamed: 0      int64
+2015-01-01    float64
+2015-01-02     object
+2015-01-05     object
+2015-01-06     object
+               ...   
+2015-12-25    float64
+2015-12-28     object
+2015-12-29     object
+2015-12-30     object
+2015-12-31     object
+Length: 262, dtype: object
+"

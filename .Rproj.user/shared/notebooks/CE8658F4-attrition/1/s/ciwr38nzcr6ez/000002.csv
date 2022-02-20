@@ -1,0 +1,4 @@
+"0","# shape of general data - rows / cols of data"
+"0","print(general_data.shape)"
+"1","(4410, 24)
+"

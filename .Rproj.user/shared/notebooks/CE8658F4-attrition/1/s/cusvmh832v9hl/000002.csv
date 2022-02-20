@@ -1,0 +1,33 @@
+"0","#checking data types of the data"
+"0","df.dtypes"
+"1","EmployeeID                   int64
+Age                          int64
+Attrition                   object
+BusinessTravel              object
+Department                  object
+DistanceFromHome             int64
+Education                    int64
+EducationField              object
+EmployeeCount                int64
+Gender                      object
+JobLevel                     int64
+JobRole                     object
+MaritalStatus               object
+MonthlyIncome                int64
+NumCompaniesWorked         float64
+Over18                      object
+PercentSalaryHike            int64
+StandardHours                int64
+StockOptionLevel             int64
+TotalWorkingYears          float64
+TrainingTimesLastYear        int64
+YearsAtCompany               int64
+YearsSinceLastPromotion      int64
+YearsWithCurrManager         int64
+JobInvolvement               int64
+PerformanceRating            int64
+EnvironmentSatisfaction    float64
+JobSatisfaction            float64
+WorkLifeBalance            float64
+dtype: object
+"

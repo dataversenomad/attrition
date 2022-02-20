@@ -1,0 +1,201 @@
+
+#Sys.setenv(RETICULATE_PYTHON = "/usr/local/bin/python3.7")
+#library(reticulate)
+#use_python('/usr/bin/python3', require = T)
+#use_python('/usr/bin/python3.7', require = T)
+
+
+import pandas as pd           # data processing, data wrangling & I/O tasks
+import numpy as np            # for linear algebra
+
+### LOADING DATA
+
+
+# general data
+general_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/general_data.csv')
+
+# manager survey data
+manager_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/manager_survey_data.csv')
+
+
+## Time series data:
+# in time
+in_time = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/in_time.csv')
+# out time
+out_time = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/out_time.csv')
+
+## survey data:
+employee_data = pd.read_csv('/home/analytics/R/Projects/Python/datasets/attrition/employee_survey_data.csv')
+
+## data dictionary
+data_dictionary = pd.read_excel('/home/analytics/R/Projects/Python/datasets/attrition/data_dictionary.xlsx')
+
+
+
+### DATA WRANGLING/MANIPULATION
+
+# general data
+
+print(general_data.columns)
+print(general_data.shape)
+
+# manager survey data
+
+print(manager_survey.columns)
+print(general_data.shape)
+
+## Time series data
+
+in_time.head()
+in_time.shape
+in_time=in_time.replace(np.nan,0)   # replace NaN values to 0
+in_time.iloc[:, 1:] = in_time.iloc[:, 1:].apply(pd.to_datetime, errors = 'coerce')
+in_time.head()
+
+
+out_time.head()
+out_time.shape
+out_time = out_time.replace(np.nan, 0)
+out_time.iloc[:, 1:] = out_time.iloc[:, 1:].apply(pd.to_datetime, errors = 'coerce')
+out_time.head()
+
+
+# storing value in one object
+
+in_time = in_time.append(out_time)
+in_time.shape
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

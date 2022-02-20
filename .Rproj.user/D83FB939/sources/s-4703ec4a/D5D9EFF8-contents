@@ -779,7 +779,11 @@ y_scores = log_reg.predict_proba(X_test)[:, 1]
 def plot_precision_recall_vs_threshold(precisions, recalls, thresholds):
 
     plt.figure(figsize=(8, 8))
+<<<<<<< HEAD
     plt.title("Precision  / Recall Scores (decision threshold)")
+=======
+    plt.title("Precision and Recall Scores as a function of the decision threshold")
+>>>>>>> 83f556883af036ab0361012108cbd019d75e4f8c
     plt.plot(thresholds, precisions[:-1], "b--", label="Precision")
     plt.plot(thresholds, recalls[:-1], "g-", label="Recall")
     plt.ylabel("Score")
@@ -870,9 +874,14 @@ y_scores = gridsearch.predict_proba(X_test)[:, 1]
 p, r, thresholds = precision_recall_curve(y_test, y_scores)
 plot_precision_recall_vs_threshold(p, r, thresholds) 
 plt.show()
+<<<<<<< HEAD
 
 ```
 
+
+=======
+```
+>>>>>>> 83f556883af036ab0361012108cbd019d75e4f8c
 We can see that our model accuracy has improved pretty well. Now, if select a new threshold of 80%, then we will be able to a better recall of 65%, which is also the same point as the precision metric.
 
 **BUILDING THE DECISION TREE MODEL WITH THE BEST PARAMETERS**

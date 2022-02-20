@@ -1,0 +1,5 @@
+"0","# Storing our categorical features"
+"0","cat_feats = list(attrition.select_dtypes(include = ['object'] ).columns)"
+"0","cat_feats"
+"1","['Attrition', 'BusinessTravel', 'Department', 'EducationField', 'Gender', 'JobRole', 'MaritalStatus']
+"

@@ -1,0 +1,3 @@
+"0","columns_vif = list(vif['vars'])"
+"0","data = attrition_dummies[columns_vif]"
+"0","data = pd.concat([data, attrition_dummies['Attrition_Yes']], axis=1)"

@@ -1,0 +1,1 @@
+"0","attrition.drop(['EmployeeCount', 'StandardHours', 'EmployeeID', 'Over18'], axis = 1, inplace = True)"

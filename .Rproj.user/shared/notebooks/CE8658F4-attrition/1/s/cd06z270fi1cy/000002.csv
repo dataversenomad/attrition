@@ -1,0 +1,46 @@
+"0","plt.figure(figsize=(20,30))"
+"1","<Figure size 2000x3000 with 0 Axes>
+"
+"0","for index, item in enumerate(numerical_columns, 1):"
+"0","    plt.subplot(8, 3, index)"
+"0","    sns.boxplot(attrition[item])"
+"0","plt.show() "
+"1","<AxesSubplot:>
+<AxesSubplot:xlabel='Age'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='DistanceFromHome'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='Education'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobLevel'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='MonthlyIncome'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='NumCompaniesWorked'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='PercentSalaryHike'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='StockOptionLevel'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='TotalWorkingYears'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='TrainingTimesLastYear'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsAtCompany'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsSinceLastPromotion'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsWithCurrManager'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobInvolvement'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='PerformanceRating'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='EnvironmentSatisfaction'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobSatisfaction'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='WorkLifeBalance'>
+<AxesSubplot:>
+<AxesSubplot:xlabel='days_off'>
+"

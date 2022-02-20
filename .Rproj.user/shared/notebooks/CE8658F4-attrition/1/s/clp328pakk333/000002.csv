@@ -1,0 +1,7 @@
+"0","ts_df.drop(['EmployeeID_in','EmployeeID_out'], axis=1, inplace=True)"
+"0","ts_df['EmployeeID'] = in_time['EmployeeID']"
+"0","ts_df.head(2)"
+"1","   EmployeeID
+0           1
+1           2
+"

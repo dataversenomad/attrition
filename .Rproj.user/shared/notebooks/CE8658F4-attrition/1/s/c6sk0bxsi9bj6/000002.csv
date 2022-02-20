@@ -1,0 +1,10 @@
+"0","attrition = pd.concat([df.set_index('EmployeeID'), ts_df.set_index('EmployeeID')], "
+"0","                      axis = 1, join = 'inner').reset_index()"
+"0","attrition.reset_index(drop = True, inplace = True)"
+"0","attrition.head(2)"
+"1","   EmployeeID  Age Attrition  ... JobSatisfaction WorkLifeBalance  days_off
+0           1   51        No  ...             4.0             2.0        17
+1           2   31       Yes  ...             2.0             4.0        13
+
+[2 rows x 30 columns]
+"

@@ -1,0 +1,2 @@
+"0","df = pd.concat([general_data.set_index('EmployeeID'), manager_data.set_index('EmployeeID'), "
+"0","                employee_data.set_index('EmployeeID')], axis = 1, join = 'inner').reset_index()"

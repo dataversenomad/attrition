@@ -1,0 +1,48 @@
+"0",""
+"0","fig = plt.figure(figsize=(20,20))"
+"0",""
+"0","for index, item in enumerate(num_feats_1, 1):"
+"0","    plt.subplot(3, 3, index)"
+"0","    sns.kdeplot(attrition[attrition.Attrition == 'Yes'][item], color=""red"", cumulative = True)"
+"0","    sns.kdeplot(attrition[attrition.Attrition == 'No'][item], color=""blue"", cumulative = True)"
+"0","    plt.legend(labels=['Yes','No'], title = 'Attrition?')"
+"0",""
+"1","<AxesSubplot:>
+<AxesSubplot:xlabel='Age', ylabel='Density'>
+<AxesSubplot:xlabel='Age', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f58662c9cf8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='DistanceFromHome', ylabel='Density'>
+<AxesSubplot:xlabel='DistanceFromHome', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585cf672e8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='Education', ylabel='Density'>
+<AxesSubplot:xlabel='Education', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5867dd6a90>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobLevel', ylabel='Density'>
+<AxesSubplot:xlabel='JobLevel', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585ce90eb8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='MonthlyIncome', ylabel='Density'>
+<AxesSubplot:xlabel='MonthlyIncome', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5861cdb978>
+<AxesSubplot:>
+<AxesSubplot:xlabel='NumCompaniesWorked', ylabel='Density'>
+<AxesSubplot:xlabel='NumCompaniesWorked', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5867ba3710>
+<AxesSubplot:>
+<AxesSubplot:xlabel='PercentSalaryHike', ylabel='Density'>
+<AxesSubplot:xlabel='PercentSalaryHike', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5867bc8e10>
+<AxesSubplot:>
+<AxesSubplot:xlabel='StockOptionLevel', ylabel='Density'>
+<AxesSubplot:xlabel='StockOptionLevel', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5867bc8dd8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='TotalWorkingYears', ylabel='Density'>
+<AxesSubplot:xlabel='TotalWorkingYears', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5867d2a898>
+"
+"0","plt.show() "
+"0",""

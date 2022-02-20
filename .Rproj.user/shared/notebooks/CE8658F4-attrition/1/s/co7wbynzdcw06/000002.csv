@@ -1,0 +1,5 @@
+"0","# creating two variables for numerical features and categorical features"
+"0","numerical_columns = attrition.select_dtypes(exclude = 'object').columns"
+"0","nmerical_data = attrition[numerical_columns]"
+"0","categorical_columns = attrition.select_dtypes(include='object').columns"
+"0","categorical_data = attrition[categorical_columns]"
