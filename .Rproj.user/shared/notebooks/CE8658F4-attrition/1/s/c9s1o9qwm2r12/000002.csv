@@ -1,0 +1,4 @@
+"0","#dropping columns that we won't need"
+"0","in_time.drop(excluded_in_cols, axis=1, inplace=True)"
+"2","KeyError: ""['2015-01-01' '2015-01-14' '2015-01-26' '2015-03-05' '2015-05-01'\n '2015-07-17' '2015-09-17' '2015-10-02' '2015-11-09' '2015-11-10'\n '2015-11-11' '2015-12-25'] not found in axis""
+"

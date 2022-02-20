@@ -1,0 +1,209 @@
+---
+title: ""
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    self_contained: true
+    default_style: "light"
+    downcute_theme: "default"
+---
+
+<center><img
+src="https://dantaanalytics.com/wp-content/uploads/2021/02/Forecasting-Methods-in-Marketing.jpg"
+width="1000" 
+height="200">
+</center>
+
+    
+
+### 1. List of packages used
+
+```{r echo=T, results='hide', warning=FALSE, message=FALSE}
+
+rm(list=ls())
+
+setwd("/home/analytics/R/Projects/Time Series 2")
+
+# Forecasting Libraries ----
+library(forecast)    
+# Machine Learning Libraries ----
+library(glmnet)       
+library(randomForest) 
+library(xgboost)     
+# Machine Learning: Ensembles
+library(modeltime.ensemble)
+# Time Series ML ----
+library(tidymodels)   
+library(rules)        
+library(modeltime)    
+# Core Libraries ----
+library(tidyverse)    
+library(lubridate)    
+library(timetk)       
+# Timing & Parallel Processing
+library(tictoc)
+library(future)
+library(doFuture)
+# Extras
+library(fs)
+library(dplyr)
+library(tidyquant)
+library(readxl)
+library(hrbrthemes)
+library(plotly)
+```
+
+
+### 2. Collecting & Preparing Data
+
+The fist step is to get the data by executing MDX based-queries from our cube of finance and then been able to collect it into an Excel spreadsheet. 
+
+The basic steps are: Collect data, convert nomenclatures, convert time-based columns to date & filtering the data. Our category “Forecast” contains the predictions from the traditional model from Finance. Our goal is to improve these numbers.
+
+
+```{r echo=T, results='hide', warning=FALSE, message=FALSE}
+
+# Reading the spreadsheet
+financials <- read_excel('/home/analytics/R/Projects/Time Series 2/00_data/FinancialsV3.xlsx',
+                         sheet = 1, col_names = TRUE)
+
+financials$Category...1 <- NULL
+
+# Pivoting our data and converting our data
+fin_data <- financials %>%
+  gather(key = "Month", value = "Value", c(Jan, Feb, Mar, Apr, May, 
+                                           Jun, Jul, Aug, Sep, Oct, Nov, Dec))  %>%
+    group_by(LOB, Year, Category...3, Metric, Month) %>%
+      summarise(Value = sum(Value)) %>%
+        mutate(Month = case_when(
+        Month == "Jan" ~ "01",
+        Month == "Feb" ~ "02",
+        Month == "Mar" ~ "03",
+        Month == "Apr" ~ "04",
+        Month == "May" ~ "05",
+        Month == "Jun" ~ "06",
+        Month == "Jul" ~ "07",
+        Month == "Aug" ~ "08",
+        Month == "Sep" ~ "09",
+        Month == "Oct" ~ "10",
+        Month == "Nov" ~ "11",
+        Month == "Dec" ~ "12",
+        TRUE ~ Month)) %>%  
+      mutate(Date = paste0(Year,"-",Month,"-","01") %>% as_date()) %>% ungroup() %>%
+        rename(Category = Category...3) %>%
+        mutate(Group = case_when(
+        LOB == 'LOB 1' ~ 'G1',
+        LOB == 'LOB 2' ~ 'G1',
+        LOB == 'LOB 3' ~ 'G2',
+        LOB == 'LOB 4' ~ 'G2',
+        LOB == 'LOB 5' ~ 'G3',
+        LOB == 'LOB 6' ~ 'G3',
+        LOB == 'LOB 7' ~ 'G4',
+        TRUE ~ LOB)) %>% 
+  filter_by_time(.start_date = "2017-01-01", .end_date = "2021-09-01") %>% 
+    group_by(LOB, Year, Category, Metric, Month, Group) %>%
+      summarise_by_time(
+        .by        = "month",
+        Value      = last(Value),
+        .type      = "ceiling") %>% 
+        mutate(Date = Date %-time% "1 day")  %>% ungroup()
+
+# fin_data will exclude traditional forecasting tool (we will replace a new method)
+fin_data <- fin_data %>% filter(!(Date < "2021-07-31" &
+                        Category == 'Forecast')  ) 
+fin_data$Year <- NULL
+fin_data$Month <- NULL
+
+# Filter by Category and Metric (Actuals and Revenue)
+fin_data_ac_rev <- fin_data %>% filter(Category == 'Actuals' & Metric == 'Revenue' ) 
+
+```
+
+Main data will be stored in **fin_data_ac_rev** dataframe. 
+
+This is the output of our data structure:
+
+```{r echo=T,  warning=FALSE, message=FALSE}
+fin_data_ac_rev %>% head(5)
+```
+How our data looks like:
+
+```{r echo=T,  warning=FALSE, message=FALSE}
+fin_data_ac_rev %>% head(5)
+```
+
+
+## 3.0 Trend Analysis 
+
+
+We then summarize our data to understand if there is any trend or patter in the time series:
+
+```{r echo=T, message=FALSE, warning=FALSE}
+
+# Merging all LOBs
+
+fin_data_ac_rev_bus <- fin_data %>% filter(Category == 'Actuals' & Metric == 'Revenue') %>%
+  select(Date, Value) %>%
+  group_by(Date) %>% summarize(Value = sum(Value)) 
+
+# Plotting current revenue
+fin_data_ac_rev_bus %>%
+  plot_time_series(Date, Value, .smooth = FALSE, 
+                   .facet_scales = "free",
+                   .title = "Commercial Business Revenue (Actuals)" )  
+
+
+```
+
+
+By the middle of 2020, our revenue trend seems to be stabilized, compared to the previous years. Also, our commercial revenue had been decreasing from the middle of 2017 to the middle of 2020 in about **27.6 %** :
+
+```{r echo=T, message=FALSE, warning=FALSE}
+
+detrend <- fin_data_ac_rev_bus %>% summarize_by_time(.date_var=Date, .by = 'month', value = mean(Value)) %>%
+  filter(Date == '2017-06-01' | Date == '2020-06-01')
+
+paste0(100 * (detrend$value[2] - detrend$value[1]) / detrend$value[1], " %")
+
+
+```
+
+
+By the end of September 2021, we are reporting about **$204,194** on current revenue.
+
+Now, let's compare our actual revenue against the forecasted revenue (traditional way):
+
+
+```{r echo=T, message=FALSE, warning=FALSE}
+
+fin_data_rev_bus <- fin_data %>% filter(Category %in% c('Actuals', 'Forecast') & Metric == 'Revenue') %>%
+  select(Category, Date, Value) %>%
+  group_by(Category, Date) %>%
+  summarize(Value = sum(Value)) 
+
+fin_data_rev_bus %>% ungroup() %>%
+  plot_time_series(Date, Value, .color_var = Category, .smooth = FALSE,
+                   .title = "Commercial Business Revenue (Actuals vs Forecast)")
+
+```
+
+Clearly we can see a gap of 3% between the actual value and the forecasted value by the end of September 2021. 
+
+
+```{r echo=T, message=FALSE, warning=FALSE}
+fin_data_rev_bus %>% filter_by_time(.date_var = Date, 
+                                                  .start_date = '2021-06-30', .end_date = '2021-09-30') %>% ungroup() %>% 
+  plot_time_series(Date, Value, .color_var = Category, .smooth = FALSE,
+                   .title = "Commercial Business Revenue (Actuals vs Forecast)")
+
+```
+
+Despite giving us a good result, there is a lot we can improve. For instance, the model doesn't seem to capture and follow the current trend pretty well. Due to other external variables and other systematic events that we cannot control, the errors are pretty high. We can come up with a model to asses if we can capture these errors and try to follow the pattern using this historical data.  
+
+### 3.1 Correlation Analysis (between lags) 
+
+```{r echo=T, message=FALSE, warning=FALSE}
+fin_data_ac_rev_bus %>% plot_acf_diagnostics(Value, log_interval_vec(Value, offset = 1000000),
+                                           .lags = 100)  
+
+```

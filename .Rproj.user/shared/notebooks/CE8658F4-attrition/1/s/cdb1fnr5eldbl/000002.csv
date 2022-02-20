@@ -1,0 +1,26 @@
+"0","out_time.iloc[:, 1:] = out_time.iloc[:, 1:].astype('datetime64[ns]')"
+"0","out_time.rename({'Unnamed: 0': 'EmployeeID'}, axis = 1, inplace = True)"
+"0","excluded = out_time.isnull().all()"
+"0","excluded[excluded == True] "
+"1","2015-01-01    True
+2015-01-14    True
+2015-01-26    True
+2015-03-05    True
+2015-05-01    True
+2015-07-17    True
+2015-09-17    True
+2015-10-02    True
+2015-11-09    True
+2015-11-10    True
+2015-11-11    True
+2015-12-25    True
+dtype: bool
+"
+"0","excluded_out_cols =list(excluded[excluded == True].index)"
+"0","out_time.drop(excluded_out_cols, axis=1, inplace=True)"
+"0","out_time.iloc[:, 1:] = out_time.iloc[:, 1:].astype('datetime64[ns]')"
+"0","out_time.rename({'Unnamed: 0': 'EmployeeID'}, axis = 1, inplace = True)"
+"0","out_time_hours = pd.DataFrame()"
+"0","for col in out_time.columns[1:]:"
+"0","    time = pd.DatetimeIndex(out_time[col])  # converts to datetime object index"
+"0","    out_time_hours[col] = (time.hour * 60 + time.minute) / 60"

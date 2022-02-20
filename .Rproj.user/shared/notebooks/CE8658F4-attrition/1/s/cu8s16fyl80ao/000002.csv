@@ -1,0 +1,23 @@
+"0","# We print the remaining variables"
+"0","print(vif)"
+"1","                                vars       vif
+7                   StockOptionLevel  2.192332
+11           YearsSinceLastPromotion  2.925581
+19  BusinessTravel_Travel_Frequently  2.868340
+23            EducationField_Finance  2.365592
+24                 EducationField_HR  1.781798
+25          EducationField_Marketing  1.844573
+26              EducationField_Other  1.200700
+27   EducationField_Technical Degree  1.312600
+28                       Gender_Male  2.573481
+29                        JobRole_HR  1.191116
+30        JobRole_Healthcare Analyst  1.471986
+31                   JobRole_Manager  1.386247
+32           JobRole_Sales Executive  2.156333
+33      JobRole_Sales Representative  1.310118
+34           JobRole_Senior Director  1.304319
+35        JobRole_Senior Director II  1.519208
+36                JobRole_Technician  1.916446
+37             MaritalStatus_Married  3.138154
+38              MaritalStatus_Single  2.504337
+"

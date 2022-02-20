@@ -1,0 +1,13 @@
+"0",""
+"0","Sys.setenv(RETICULATE_PYTHON = ""/usr/local/bin/python3.7"")"
+"0","library(reticulate)"
+"0","use_python('/usr/bin/python3', require = T)"
+"2","ERROR: The requested version of Python ('/usr/bin/python3') cannot be used, as another
+"
+"2","version of Python ('/usr/bin/python3.7') has already been initialized. Please restart the
+"
+"2","R session if you need to attach reticulate to a different version of Python.
+"
+"2","Error in use_python(""/usr/bin/python3"", require = T) : 
+  failed to initialize requested version of Python
+"

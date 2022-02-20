@@ -1,0 +1,6 @@
+"0","ts_df['days_off'] = in_time_hours.isnull().sum(axis = 1)"
+"0","ts_df.head(2)"
+"1","   EmployeeID  days_off
+0           1        17
+1           2        13
+"

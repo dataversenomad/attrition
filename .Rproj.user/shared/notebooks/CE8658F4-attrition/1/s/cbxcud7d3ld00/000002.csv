@@ -1,0 +1,11 @@
+"0","attrition_null_value_col = attrition.isna().sum()[attrition.isna().sum()!= 0].reset_index().rename(columns="
+"0","                                                                        {'index': 'col_name', 0: '#'})"
+"0","attrition_null_value_col['%'] = attrition_null_value_col['#'] / attrition.shape[0]"
+"0","attrition_null_value_col"
+"1","                  col_name   #         %
+0       NumCompaniesWorked  19  0.004308
+1        TotalWorkingYears   9  0.002041
+2  EnvironmentSatisfaction  25  0.005669
+3          JobSatisfaction  20  0.004535
+4          WorkLifeBalance  38  0.008617
+"

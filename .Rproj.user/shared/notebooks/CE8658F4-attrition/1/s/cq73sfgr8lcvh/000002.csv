@@ -1,0 +1,7 @@
+"0","df.head(2)"
+"1","   EmployeeID  Age  ... JobSatisfaction WorkLifeBalance
+0           1   51  ...             4.0             2.0
+1           2   31  ...             2.0             4.0
+
+[2 rows x 29 columns]
+"

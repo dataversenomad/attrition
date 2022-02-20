@@ -1,0 +1,25 @@
+"0","attrition.select_dtypes(exclude = 'object').apply(pd.Series.nunique, axis = 0)"
+"1","EmployeeID                 4410
+Age                          43
+DistanceFromHome             29
+Education                     5
+EmployeeCount                 1
+JobLevel                      5
+MonthlyIncome              1349
+NumCompaniesWorked           10
+PercentSalaryHike            15
+StandardHours                 1
+StockOptionLevel              4
+TotalWorkingYears            40
+TrainingTimesLastYear         7
+YearsAtCompany               37
+YearsSinceLastPromotion      16
+YearsWithCurrManager         18
+JobInvolvement                4
+PerformanceRating             2
+EnvironmentSatisfaction       5
+JobSatisfaction               5
+WorkLifeBalance               5
+days_off                     24
+dtype: int64
+"

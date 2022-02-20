@@ -1,0 +1,29 @@
+"0","#Ploting barplot for target "
+"0","plt.figure(figsize=(6,4))"
+"1","<Figure size 600x400 with 0 Axes>
+"
+"0","g = sns.barplot(data['Attrition_Yes'], data['Attrition_Yes'], palette='Set1', estimator=lambda x: len(x) / len(data) )"
+"0",""
+"0","#Anotating the graph"
+"0","for p in g.patches:"
+"0","        width, height = p.get_width(), p.get_height()"
+"0","        x, y = p.get_xy() "
+"0","        g.text(x + width/2, "
+"0","               y + height, "
+"0","               '{:.0%}'.format(height), "
+"0","               horizontalalignment='center',fontsize=15)"
+"0",""
+"1","Text(0.0, 0.8387755102040816, '84%')
+Text(1.0, 0.16122448979591836, '16%')
+"
+"0","#Setting the labels"
+"0","plt.xlabel('Attrition (0 = No, 1 = Yes)', fontsize=14)"
+"1","Text(0.5, 0, 'Attrition (0 = No, 1 = Yes)')
+"
+"0","plt.ylabel('Percentage', fontsize=14)"
+"1","Text(0, 0.5, 'Percentage')
+"
+"0","plt.title('Percentage of employees that will/will not ', fontsize=16)"
+"1","Text(0.5, 1.0, 'Percentage of employees that will/will not ')
+"
+"0","plt.show()"

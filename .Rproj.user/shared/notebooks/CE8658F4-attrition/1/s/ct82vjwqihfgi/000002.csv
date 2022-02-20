@@ -1,0 +1,51 @@
+"0",""
+"0","fig = plt.figure(figsize=(20,20))"
+"0",""
+"0","for index, item in enumerate(num_feats_2, 1):"
+"0","    plt.subplot(3, 4, index)"
+"0","    sns.distplot(attrition[attrition.Attrition == 'Yes'][item], color=""red"", hist = False,  kde=True, norm_hist=True)"
+"0","    sns.distplot(attrition[attrition.Attrition == 'No'][item], color=""blue"", hist = False,  kde=True, norm_hist=True)"
+"0","    plt.legend(labels=['Yes','No'], title = 'Attrition?')"
+"0",""
+"1","<AxesSubplot:>
+<AxesSubplot:xlabel='TrainingTimesLastYear', ylabel='Density'>
+<AxesSubplot:xlabel='TrainingTimesLastYear', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585ce4ba58>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsAtCompany', ylabel='Density'>
+<AxesSubplot:xlabel='YearsAtCompany', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5856842e10>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsSinceLastPromotion', ylabel='Density'>
+<AxesSubplot:xlabel='YearsSinceLastPromotion', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585882add8>
+<AxesSubplot:>
+<AxesSubplot:xlabel='YearsWithCurrManager', ylabel='Density'>
+<AxesSubplot:xlabel='YearsWithCurrManager', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585723d438>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobInvolvement', ylabel='Density'>
+<AxesSubplot:xlabel='JobInvolvement', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5858c91a58>
+<AxesSubplot:>
+<AxesSubplot:xlabel='PerformanceRating', ylabel='Density'>
+<AxesSubplot:xlabel='PerformanceRating', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f5857556470>
+<AxesSubplot:>
+<AxesSubplot:xlabel='EnvironmentSatisfaction', ylabel='Density'>
+<AxesSubplot:xlabel='EnvironmentSatisfaction', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f58569a9128>
+<AxesSubplot:>
+<AxesSubplot:xlabel='JobSatisfaction', ylabel='Density'>
+<AxesSubplot:xlabel='JobSatisfaction', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585699a208>
+<AxesSubplot:>
+<AxesSubplot:xlabel='WorkLifeBalance', ylabel='Density'>
+<AxesSubplot:xlabel='WorkLifeBalance', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585b1c7208>
+<AxesSubplot:>
+<AxesSubplot:xlabel='days_off', ylabel='Density'>
+<AxesSubplot:xlabel='days_off', ylabel='Density'>
+<matplotlib.legend.Legend object at 0x7f585c6469e8>
+"
+"0","plt.show() "

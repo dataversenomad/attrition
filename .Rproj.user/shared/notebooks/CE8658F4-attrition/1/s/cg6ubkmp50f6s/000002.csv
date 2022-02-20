@@ -1,0 +1,4 @@
+"0","# shape of manager data - rows / cols of data (survey)"
+"0","print(manager_data.shape)"
+"1","(4410, 3)
+"

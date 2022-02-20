@@ -1,0 +1,4 @@
+"0","# shape of employee data - rows / cols of data (survey)"
+"0","print(employee_data.shape)"
+"1","(4410, 4)
+"

@@ -1,0 +1,5 @@
+"0","ts_df.loc[ts_df['EmployeeID'] != 0]  #checking if all matched correctly by using our master key: EmployeeID"
+"1","Empty DataFrame
+Columns: [EmployeeID_in, EmployeeID_out, EmployeeID]
+Index: []
+"
